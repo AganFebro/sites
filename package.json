@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://AganFebro.github.io/portfolio",
+  "homepage": "https://AganFebro.github.io/sites",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
