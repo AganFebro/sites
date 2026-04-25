@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Doe - Crypto Analyst</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #050508;
+            --accent: #ff6b35;
+            --accent2: #00f5d4;
+            --accent3: #fee440;
+            --text: #ffffff;
+            --text-muted: #8892a0;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .hero-bg-text {
+            position: absolute;
+            font-size: clamp(100px, 20vw, 280px);
+            font-weight: 700;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 107, 53, 0.1);
+            letter-spacing: -5px;
+            user-select: none;
+            animation: bgTextPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes bgTextPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.02); }
+        }
+
+        .glitch-wrapper {
+            position: relative;
+        }
+
+        .glitch {
+            font-size: clamp(48px, 10vw, 96px);
+            font-weight: 700;
+            letter-spacing: -2px;
+            position: relative;
+            animation: glitch 3s infinite;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            color: var(--accent2);
+            animation: glitch-1 0.3s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+            transform: translate(-3px);
+        }
+
+        .glitch::after {
+            color: var(--accent3);
+            animation: glitch-2 0.3s infinite;
+            clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+            transform: translate(3px);
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% { transform: translate(-3px); }
+            50% { transform: translate(3px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% { transform: translate(3px); }
+            50% { transform: translate(-3px); }
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { opacity: 1; }
+            92% { opacity: 0.8; transform: skewX(0deg); }
+            94% { opacity: 1; transform: skewX(-2deg); }
+            96% { opacity: 0.9; transform: skewX(1deg); }
+        }
+
+        .hero-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(14px, 2vw, 18px);
+            color: var(--text-muted);
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .typing-text {
+            border-right: 2px solid var(--accent);
+            padding-right: 8px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { border-color: var(--accent); }
+            50% { border-color: transparent; }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator span {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            animation: scrollLine 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes scrollLine {
+            0% { transform: scaleY(0); transform-origin: top; }
+            50% { transform: scaleY(1); transform-origin: top; }
+            51% { transform-origin: bottom; }
+            100% { transform: scaleY(0); transform-origin: bottom; }
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: clamp(20px, 5vw, 60px);
+            padding: 30px 20px;
+            background: linear-gradient(90deg, 
+                rgba(255,107,53,0.1) 0%, 
+                rgba(0,245,212,0.1) 50%, 
+                rgba(254,228,64,0.1) 100%);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 0.6s forwards;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+
+        .stat-value {
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* About Section */
+        .about {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .about {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        .about-image {
+            position: relative;
+            aspect-ratio: 1;
+        }
+
+        .about-image::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: linear-gradient(45deg, var(--accent), var(--accent2), var(--accent3), var(--accent));
+            background-size: 400% 400%;
+            animation: gradientMove 4s ease infinite;
+            border-radius: 24px;
+        }
+
+        .about-image-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            overflow: hidden;
+        }
+
+        .about-image-inner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 60%, var(--bg) 100%);
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .about-content h2 {
+            font-size: clamp(32px, 5vw, 48px);
+            margin-bottom: 24px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .about-content h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .about-content p {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: var(--accent2);
+            font-weight: 500;
+        }
+
+        /* Skills Section */
+        .skills {
+            padding: 100px 20px;
+            background: linear-gradient(180deg, transparent, rgba(255,107,53,0.02), transparent);
+        }
+
+        .skills-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: clamp(28px, 5vw, 42px);
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(255,107,53,0.1);
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: 0.5s;
+        }
+
+        .skill-card:hover::before {
+            left: 100%;
+        }
+
+        .skill-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .skill-card h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .skill-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .skill-bar {
+            margin-top: 16px;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border-radius: 2px;
+            width: 0;
+            animation: skillFill 1.5s ease forwards;
+        }
+
+        @keyframes skillFill {
+            to { width: var(--skill-level); }
+        }
+
+        /* Timeline */
+        .timeline-section {
+            padding: 100px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -40px;
+            top: 4px;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 4px solid var(--bg);
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .timeline-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .timeline-item h3 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-item p {
+            color: var(--text-muted);
+        }
+
+        /* Contact */
+        .contact {
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-title {
+            font-size: clamp(32px, 6vw, 56px);
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShine 3s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes textShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .contact-subtitle {
+            color: var(--text-muted);
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100px;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .contact-btn:hover::before {
+            opacity: 1;
+        }
+
+        .contact-btn:hover {
+            border-color: transparent;
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255,107,53,0.3);
+        }
+
+        .contact-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .contact-btn svg {
+            position: relative;
+            z-index: 1;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Floating Elements */
+        .float-element {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .floating-text {
+            position: fixed;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: rgba(255,107,53,0.2);
+            pointer-events: none;
+            animation: floatText 15s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes floatText {
+            0% { transform: translateX(100vw); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(-100vw); opacity: 0; }
+        }
+
+        /* Marquee */
+        .marquee-container {
+            padding: 30px 0;
+            overflow: hidden;
+            background: rgba(255,107,53,0.05);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .marquee {
+            display: flex;
+            animation: marquee 20s linear infinite;
+        }
+
+        .marquee-content {
+            display: flex;
+            gap: 60px;
+            padding-right: 60px;
+        }
+
+        .marquee-item {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .marquee-item span {
+            color: var(--accent);
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles"></canvas>
+
+    <div class="content">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-bg-text">CRYPTO</div>
+            <div class="glitch-wrapper">
+                <h1 class="glitch" data-text="JOHN DOE">JOHN DOE</h1>
+            </div>
+            <p class="hero-subtitle">
+                <span class="typing-text">Cryptocurrency Analyst & Data Observer</span>
+                <span>|</span>
+                <span>Since 2017</span>
+            </p>
+            <div class="scroll-indicator">
+                <span>SCROLL</span>
+                <div class="scroll-line"></div>
+            </div>
+        </section>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value">9+</div>
+                <div class="stat-label">Years Experience</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">∞</div>
+                <div class="stat-label">Data Points Analyzed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">ID</div>
+                <div class="stat-label">Indonesian Market</div>
+            </div>
+        </div>
+
+        <!-- Marquee -->
+        <div class="marquee-container">
+            <div class="marquee">
+                <div class="marquee-content">
+                    <span class="marquee-item">INFLOW <span>→</span></span>
+                    <span class="marquee-item">OUTFLOW <span>→</span></span>
+                    <span class="marquee-item">EXCHANGE DATA <span>→</span></span>
+                    <span class="marquee-item">ON-CHAIN ANALYSIS <span>→</span></span>
+                    <span class="marquee-item">TREND IDENTIFICATION <span>→</span></span>
+                    <span class="marquee-item">INFLOW <span>→</span></span>
+                    <span class="marquee-item">OUTFLOW <span>→</span></span>
+                    <span class="marquee-item">EXCHANGE DATA <span>→</span></span>
+                    <span class="marquee-item">ON-CHAIN ANALYSIS <span>→</span></span>
+                    <span class="marquee-item">TREND IDENTIFICATION <span>→</span></span>
+                </div>
+                <div class="marquee-content">
+                    <span class="marquee-item">INFLOW <span>→</span></span>
+                    <span class="marquee-item">OUTFLOW <span>→</span></span>
+                    <span class="marquee-item">EXCHANGE DATA <span>→</span></span>
+                    <span class="marquee-item">ON-CHAIN ANALYSIS <span>→</span></span>
+                    <span class="marquee-item">TREND IDENTIFICATION <span>→</span></span>
+                    <span class="marquee-item">INFLOW <span>→</span></span>
+                    <span class="marquee-item">OUTFLOW <span>→</span></span>
+                    <span class="marquee-item">EXCHANGE DATA <span>→</span></span>
+                    <span class="marquee-item">ON-CHAIN ANALYSIS <span>→</span></span>
+                    <span class="marquee-item">TREND IDENTIFICATION <span>→</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- About -->
+        <section class="about">
+            <div class="about-image">
+                <div class="about-image-inner">📊</div>
+            </div>
+            <div class="about-content">
+                <h2>Tentang Saya</h2>
+                <p>
+                    Seorang <span class="highlight">pengamat cryptocurrency</span> dari Indonesia yang telah aktif 
+                    menganalisis pasar crypto sejak <span class="highlight">2017</span>.
+                </p>
+                <p>
+                    Fokus utama saya adalah memantau dan menganalisis <span class="highlight">data inflow dan outflow</span> 
+                    di berbagai exchange lokal Indonesia. Setiap hari saya mengeksplorasi pola pergerakan aset digital 
+                    untuk memberikan insights berharga bagi komunitas.
+                </p>
+                <p>
+                    Pengalaman hampir satu dekade telah mempertajam kemampuan saya dalam membaca sentimen pasar, 
+                    mengidentifikasi tren, dan memahami perilaku investor crypto Indonesia.
+                </p>
+            </div>
+        </section>
+
+        <!-- Skills -->
+        <section class="skills">
+            <div class="skills-container">
+                <h2 class="section-title">Keahlian & Fokus</h2>
+                <div class="skills-grid">
+                    <div class="skill-card" style="--skill-level: 95%">
+                        <div class="skill-icon">📈</div>
+                        <h3>Inflow/Outflow Analysis</h3>
+                        <p>Menganalisis pergerakan dana masuk dan keluar di exchange lokal</p>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                    </div>
+                    <div class="skill-card" style="--skill-level: 90%">
+                        <div class="skill-icon">🔗</div>
+                        <h3>On-Chain Data</h3>
+                        <p>Melacak aktivitas on-chain untuk prediksi pasar</p>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                    </div>
+                    <div class="skill-card" style="--skill-level: 88%">
+                        <div class="skill-icon">🇮🇩</div>
+                        <h3>Indonesian Market</h3>
+                        <p>Pemahaman mendalam ekosistem crypto Indonesia</p>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                    </div>
+                    <div class="skill-card" style="--skill-level: 85%">
+                        <div class="skill-icon">📊</div>
+                        <h3>Data Visualization</h3>
+                        <p>Mengubah data kompleks jadi insight visual</p>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                    </div>
+                    <div class="skill-card" style="--skill-level: 82%">
+                        <div class="skill-icon">🎯</div>
+                        <h3>Trend Identification</h3>
+                        <p>Mengenali pola dan tren pasar lebih awal</p>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                    </div>
+                    <div class="skill-card" style="--skill-level: 80%">
+                        <div class="skill-icon">💭</div>
+                        <h3>Market Sentiment</h3>
+                        <p>Membaca sentimen investor dan psikologi pasar</p>
+                        <div class="skill-bar"><div class="skill-progress"></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline -->
+        <section class="timeline-section">
+            <h2 class="section-title">Perjalanan</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">2017</div>
+                    <h3>Mulai Perjalanan Crypto</h3>
+                    <p>Memulai eksplorasi di dunia cryptocurrency dan blockchain Indonesia</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2019</div>
+                    <h3>Fokus Exchange Data</h3>
+                    <p>Memulai analisis khusus inflow-outflow di exchange lokal</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2022</div>
+                    <h3>Community Building</h3>
+                    <p>Aktif berbagi insights dan analisis dengan komunitas crypto Indonesia</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">2026</div>
+                    <h3>Continuing the Mission</h3>
+                    <p>Terus memantau dan menganalisis untuk memberikan value ke komunitas</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section class="contact">
+            <div class="contact-container">
+                <h2 class="contact-title">Let's Connect</h2>
+                <p class="contact-subtitle">Tertarik untuk berdiskusi tentang crypto? Reach out!</p>
+                <div class="contact-links">
+                    <a href="#" class="contact-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        <span>Twitter/X</span>
+                    </a>
+                    <a href="#" class="contact-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002.003-.002.003-.002.003l.002-.003-.002.003s-.255.082-.509-.137c-.251-.21-.364-.549-.364-.854v-10.19c0-.622.315-.968.942-.894l8.27 2.16c.593.139.602.501.134.91z"/></svg>
+                        <span>Telegram</span>
+                    </a>
+                    <a href="#" class="contact-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="#" class="contact-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 1.909-1.546 3.456-3.456 3.456H3.456C1.546 22.822 0 21.276 0 19.366v-13.91c0-1.909 1.546-3.455 3.456-3.455h17.088C22.454 2 24 3.548 24 5.457zm-9 6.273l-6.545 6.545-.818-1.637L15 10.73V3.182h1.91V9l3.09 3.273z"/></svg>
+                        <span>Email</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2026 John Doe. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Particle Animation
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 107, 53, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 80; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // Connect nearby particles
+            particles.forEach((a, i) => {
+                particles.slice(i + 1).forEach(b => {
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.strokeStyle = `rgba(255, 107, 53, ${0.1 * (1 - dist / 150)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                });
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Timeline Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // Floating Text
+        function createFloatingText() {
+            const text = document.createElement('div');
+            text.className = 'floating-text';
+            text.textContent = 'CRYPTO ' + Math.random().toString(36).substring(7).toUpperCase();
+            text.style.top = Math.random() * 80 + 10 + '%';
+            text.style.animationDuration = (15 + Math.random() * 10) + 's';
+            document.body.appendChild(text);
+
+            setTimeout(() => text.remove(), 25000);
+        }
+
+        setInterval(createFloatingText, 3000);
+    </script>
+</body>
+</html>
