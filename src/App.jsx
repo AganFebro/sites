@@ -256,7 +256,14 @@ function App() {
                   <img src={logo} alt="Febrian logo" className="hero-mark__image" />
                 </div>
                 <div className="hero-copy">
-                  <h1 className="hero-name">Febrian</h1>
+                  <h1 className="hero-name" aria-label="Febrian">
+                    <span className="hero-name__viewport" aria-hidden="true">
+                      <span className="hero-name__track">
+                        <span className="hero-name__line">febro</span>
+                        <span className="hero-name__line">Febrian</span>
+                      </span>
+                    </span>
+                  </h1>
                   <div className="social-row social-row--hero" aria-label="Social links">
                     {socialLinks.map((item) => (
                       <a
