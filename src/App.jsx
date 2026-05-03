@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
 import logo from './assets/logo_colored.png';
@@ -12,40 +12,61 @@ const slides = [
 ];
 
 const metrics = [
-  { value: '2+', label: 'Years in community operations' },
-  { value: '230K+', label: 'Largest member base supported' },
-  { value: 'ID / EN', label: 'Bilingual moderation and support' },
+  { value: '2+', label: 'Years in Web3 community moderation' },
+  { value: '230K+', label: 'Largest Discord member base supported' },
+  { value: 'Top 3', label: 'CARV Indonesia community rank globally' },
 ];
 
 const roles = [
   {
     company: 'CARV',
-    span: '2024 to 2026',
+    span: 'February 2024 - January 2026',
     title: 'Indonesia Community Moderator',
     summary:
-      'Led one of CARV\'s most active regional communities through product support, event cadence, and measured escalation handling.',
+      'Handled day-to-day moderation, product support, and live community operations for one of CARV\'s strongest regional communities.',
+    highlights: [
+      'Supported global and regional users with product guidance, escalation handling, and community support through chat.',
+      'Expanded the Indonesia Discord community into one of the top three most active CARV communities worldwide.',
+      'Ran daily activations including game nights, quizzes, campaign content, and lightweight event tooling.',
+    ],
   },
   {
     company: 'Anitya',
-    span: '2025',
+    span: 'August 2025 - September 2025',
     title: 'Ambassador',
     summary:
-      'Supported awareness with social storytelling and a 3D gamified experience concept tailored to the ecosystem tone.',
+      'Supported ecosystem awareness through campaign content and an interactive experience concept tailored to the product.',
+    highlights: [
+      'Designed a 3D gamified experience inside the Anitya web app ecosystem.',
+      'Promoted awareness and engagement through consistent content on X.',
+    ],
   },
 ];
 
 const workItems = [
   {
-    name: 'NEOLAND',
-    tag: 'Hackathon winner',
-    description: 'NFT marketplace concept built on CARV SVM with strong community traction.',
+    name: 'Regional Survey Webapp',
+    tag: 'Community tool',
+    description: 'Built a simple survey webapp to collect structured feedback from regional community members after activations.',
     accent: '#8db7ff',
   },
   {
-    name: 'Paylazor',
-    tag: 'Product UI concept',
-    description: 'Plug-and-play widget direction built on top of the LazorKit SDK.',
+    name: 'Tournament Registration Site',
+    tag: 'Event operations',
+    description: 'Created a lightweight registration flow for gaming tournaments and community events to reduce manual coordination.',
     accent: '#ffb177',
+  },
+  {
+    name: '3D Gamified Experience',
+    tag: 'Experience design',
+    description: 'Designed an interactive concept for Anitya to support ecosystem storytelling and campaign engagement.',
+    accent: '#7ed8c2',
+  },
+  {
+    name: 'Content and Stream Support',
+    tag: 'Media operations',
+    description: 'Produced gaming-related videos and supported live sessions across Discord and Twitch for regional campaigns.',
+    accent: '#c39bff',
   },
 ];
 
@@ -143,6 +164,104 @@ function SocialIcon({ label }) {
     default:
       return null;
   }
+}
+
+function SlideShell({ active, className = '', children }) {
+  const scrollRef = useRef(null);
+  const [scrollMetrics, setScrollMetrics] = useState({
+    visible: false,
+    thumbHeight: 0,
+    thumbOffset: 0,
+  });
+
+  useLayoutEffect(() => {
+    const element = scrollRef.current;
+
+    if (!element) {
+      return undefined;
+    }
+
+    const updateScrollMetrics = () => {
+      const { clientHeight, scrollHeight, scrollTop } = element;
+      const maxScroll = scrollHeight - clientHeight;
+
+      if (maxScroll <= 1) {
+        setScrollMetrics((current) => {
+          if (!current.visible && current.thumbHeight === 0 && current.thumbOffset === 0) {
+            return current;
+          }
+
+          return { visible: false, thumbHeight: 0, thumbOffset: 0 };
+        });
+        return;
+      }
+
+      const thumbHeight = Math.min(Math.max((clientHeight / scrollHeight) * clientHeight, 3.5 * 16), clientHeight);
+      const travel = Math.max(clientHeight - thumbHeight, 0);
+      const thumbOffset = maxScroll > 0 ? (scrollTop / maxScroll) * travel : 0;
+
+      setScrollMetrics((current) => {
+        if (
+          current.visible &&
+          Math.abs(current.thumbHeight - thumbHeight) < 0.5 &&
+          Math.abs(current.thumbOffset - thumbOffset) < 0.5
+        ) {
+          return current;
+        }
+
+        return {
+          visible: true,
+          thumbHeight,
+          thumbOffset,
+        };
+      });
+    };
+
+    const handleResize = () => {
+      window.requestAnimationFrame(updateScrollMetrics);
+    };
+
+    updateScrollMetrics();
+
+    element.addEventListener('scroll', updateScrollMetrics, { passive: true });
+    window.addEventListener('resize', handleResize);
+
+    let resizeObserver;
+
+    if (typeof ResizeObserver === 'function') {
+      resizeObserver = new ResizeObserver(handleResize);
+      resizeObserver.observe(element);
+
+      if (element.firstElementChild instanceof Element) {
+        resizeObserver.observe(element.firstElementChild);
+      }
+    }
+
+    return () => {
+      element.removeEventListener('scroll', updateScrollMetrics);
+      window.removeEventListener('resize', handleResize);
+      resizeObserver?.disconnect();
+    };
+  }, [active]);
+
+  return (
+    <section className={`slide ${className}`.trim()} aria-hidden={!active}>
+      <div ref={scrollRef} className="slide-scroll-area">
+        {children}
+      </div>
+      {scrollMetrics.visible ? (
+        <span className="slide-scrollbar" aria-hidden="true">
+          <span
+            className="slide-scrollbar__thumb"
+            style={{
+              height: `${scrollMetrics.thumbHeight}px`,
+              transform: `translateY(${scrollMetrics.thumbOffset}px)`,
+            }}
+          />
+        </span>
+      ) : null}
+    </section>
+  );
 }
 
 function App() {
@@ -250,7 +369,7 @@ function App() {
             className="slides-track"
             style={{ transform: `translateX(-${activeIndex * 100}%)` }}
           >
-            <section className="slide slide--hero" aria-hidden={activeIndex !== 0}>
+            <SlideShell className="slide--hero" active={activeIndex === 0}>
               <div className="slide-panel hero-stage">
                 <div className="hero-mark">
                   <img src={logo} alt="Febrian logo" className="hero-mark__image" />
@@ -292,41 +411,42 @@ function App() {
                   </div>
                 </div>
               </div>
-            </section>
+            </SlideShell>
 
-            <section className="slide" aria-hidden={activeIndex !== 1}>
+            <SlideShell active={activeIndex === 1}>
               <div className="slide-panel profile-layout">
                 <article className="surface-card surface-card--feature">
                   <p className="eyebrow">Profile</p>
-                  <h2 className="section-heading">Calm moderation for fast-moving communities.</h2>
+                  <h2 className="section-heading">Web3 community moderation grounded in support and retention.</h2>
                   <p className="body-copy">
-                    I support product conversations, regional activations, and daily rituals that keep
-                    large Web3 spaces warm, clear, and reliable.
+                    Community moderator with 2+ years of experience managing large-scale Web3 communities,
+                    including community building, live event operations, user support through chat,
+                    onboarding new users, retaining early adopters, and translating feedback for internal teams.
                   </p>
                   <div className="chip-row" aria-label="Focus areas">
-                    <span className="chip">Community care</span>
-                    <span className="chip">Events and AMAs</span>
-                    <span className="chip">Escalation flow</span>
-                    <span className="chip">Member-first support</span>
+                    <span className="chip">Community moderation</span>
+                    <span className="chip">Product support</span>
+                    <span className="chip">Event operations</span>
+                    <span className="chip">Onboarding and retention</span>
                   </div>
                 </article>
 
                 <article className="surface-card note-card note-card--profile">
-                  <p className="note-card__label">Method</p>
+                  <p className="note-card__label">Working style</p>
                   <p className="note-card__copy">
-                    Clear moderation tone, regional context, and rituals that make busy communities feel human.
+                    Clear communication, steady conflict handling, and regional context for Indonesian and global audiences.
                   </p>
                 </article>
               </div>
-            </section>
+            </SlideShell>
 
-            <section className="slide" aria-hidden={activeIndex !== 2}>
+            <SlideShell active={activeIndex === 2}>
               <div className="slide-panel snapshot-layout">
                 <article className="surface-card surface-card--compact">
                   <p className="eyebrow">Snapshot</p>
-                  <h2 className="section-heading section-heading--compact">Scale, language, and support rhythm.</h2>
+                  <h2 className="section-heading section-heading--compact">Scale, languages, and day-to-day operating scope.</h2>
                   <p className="body-copy body-copy--compact">
-                    A concise record of the operating environment I work best in.
+                    A concise snapshot of the environments and responsibilities handled across recent roles.
                   </p>
                 </article>
 
@@ -338,16 +458,17 @@ function App() {
                     </article>
                   ))}
                   <article className="surface-card note-card">
-                    <p className="note-card__label">Approach</p>
+                    <p className="note-card__label">Coverage</p>
                     <p className="note-card__copy">
-                      Structured escalation, live event cadence, and concise support writing.
+                      Discord and Telegram moderation, live event execution, conflict handling,
+                      product Q&amp;A, and bilingual support in Indonesian and English.
                     </p>
                   </article>
                 </div>
               </div>
-            </section>
+            </SlideShell>
 
-            <section className="slide" aria-hidden={activeIndex !== 3}>
+            <SlideShell active={activeIndex === 3}>
               <div className="slide-panel single-column-slide">
                 <article className="surface-card">
                   <p className="eyebrow">Experience</p>
@@ -362,19 +483,24 @@ function App() {
                           <p className="role-card__span">{role.span}</p>
                         </div>
                         <p className="role-card__summary">{role.summary}</p>
+                        <ul className="role-card__highlights">
+                          {role.highlights.map((highlight) => (
+                            <li key={highlight}>{highlight}</li>
+                          ))}
+                        </ul>
                       </article>
                     ))}
                   </div>
                 </article>
               </div>
-            </section>
+            </SlideShell>
 
-            <section className="slide" aria-hidden={activeIndex !== 4}>
+            <SlideShell active={activeIndex === 4}>
               <div className="slide-panel single-column-slide">
                 <article className="surface-card surface-card--feature">
                   <p className="eyebrow">Selected Work</p>
                   <h2 className="section-heading section-heading--compact">
-                    Product-facing ideas with community context.
+                    Community projects built around real operational needs.
                   </h2>
                   <div className="work-grid work-grid--feature">
                     {workItems.map((item) => (
@@ -390,11 +516,12 @@ function App() {
                     ))}
                   </div>
                   <p className="body-copy body-copy--compact">
-                    Also built survey, registration, and leaderboard tools for live activations.
+                    Additional portfolio samples include repositories, livestream coverage, edited media,
+                    and supporting documentation.
                   </p>
                 </article>
               </div>
-            </section>
+            </SlideShell>
           </div>
         </div>
       </main>
