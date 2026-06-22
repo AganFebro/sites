@@ -382,16 +382,6 @@ function App() {
         {slides[activeIndex].liveLabel}
       </div>
 
-      <button
-        type="button"
-        className="theme-toggle"
-        onClick={toggleTheme}
-        aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-        title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
-      >
-        <ThemeIcon theme={theme} />
-      </button>
-
       <div className="ambient-scene" aria-hidden="true">
         {orbStates[activeIndex].map((state, index) => (
           <span
@@ -416,6 +406,15 @@ function App() {
           </div>
 
           <div className="frame-actions" aria-label="Slide controls">
+            <button
+              type="button"
+              className="theme-toggle"
+              onClick={toggleTheme}
+              aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+              title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            >
+              <ThemeIcon theme={theme} />
+            </button>
             <button
               type="button"
               className="nav-arrow"
@@ -480,6 +479,7 @@ function App() {
                         <path d="M12 20h9" />
                         <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                       </svg>
+                      <span className="social-link__text">Blog</span>
                     </Link>
                   </div>
                 </div>

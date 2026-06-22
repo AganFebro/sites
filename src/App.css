@@ -261,10 +261,6 @@
 }
 
 .theme-toggle {
-  position: fixed;
-  top: clamp(1rem, 2vw, 2rem);
-  right: clamp(1rem, 2vw, 2rem);
-  z-index: 30;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -393,6 +389,9 @@
   line-height: 0.92;
   letter-spacing: -0.05em;
   display: inline-flex;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .hero-name__viewport {
@@ -829,6 +828,19 @@
 .social-link svg {
   width: 1.1rem;
   height: 1.1rem;
+}
+
+.social-link--writing {
+  width: auto;
+  gap: 0.5rem;
+  padding: 0 0.95rem;
+}
+
+.social-link__text {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 @media (max-width: 900px) {
