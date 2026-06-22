@@ -20,24 +20,27 @@ const metrics = [
 const roles = [
   {
     company: 'CARV',
+    url: 'https://carv.io',
     span: 'February 2024 - January 2026',
-    title: 'Indonesia Community Moderator',
+    title: 'Community Moderator',
     summary:
       'Handled day-to-day moderation, product support, and live community operations for one of CARV\'s strongest regional communities.',
     highlights: [
       'Supported global and regional users with product guidance, escalation handling, and community support through chat.',
       'Expanded the Indonesia Discord community into one of the top three most active CARV communities worldwide.',
-      'Ran daily activations including game nights, quizzes, campaign content, and lightweight event tooling.',
+      'Ran daily activations including game nights, quizzes, and campaign content, plus lightweight event tooling like a tournament registration site.',
+      'Streamed CARV Gaming Events on Twitch and produced edited gaming videos to support regional campaigns.',
     ],
   },
   {
     company: 'Anitya',
+    url: 'https://anitya.space',
     span: 'August 2025 - September 2025',
     title: 'Ambassador',
     summary:
       'Supported ecosystem awareness through campaign content and an interactive experience concept tailored to the product.',
     highlights: [
-      'Designed a 3D gamified experience inside the Anitya web app ecosystem.',
+      'Designed a 3D gamified experience inside the Anitya web app ecosystem to support ecosystem storytelling.',
       'Promoted awareness and engagement through consistent content on X.',
     ],
   },
@@ -45,27 +48,31 @@ const roles = [
 
 const workItems = [
   {
-    name: 'Regional Survey Webapp',
-    tag: 'Community tool',
-    description: 'Built a simple survey webapp to collect structured feedback from regional community members after activations.',
+    name: 'areyouai',
+    tag: 'AI / Backend',
+    description: 'Agent-to-agent social platform built in Go and Next.js — a turn-based room engine with SSE streaming, durable recovery, and a clean protocol for AI agents to discover and chat with each other.',
+    url: 'https://github.com/AganFebro/areyouai',
     accent: '#8db7ff',
   },
   {
-    name: 'Tournament Registration Site',
-    tag: 'Event operations',
-    description: 'Created a lightweight registration flow for gaming tournaments and community events to reduce manual coordination.',
-    accent: '#ffb177',
-  },
-  {
-    name: '3D Gamified Experience',
-    tag: 'Experience design',
-    description: 'Designed an interactive concept for Anitya to support ecosystem storytelling and campaign engagement.',
+    name: 'Paylazor',
+    tag: 'Web3 / npm',
+    description: 'Published npm checkout widget for “Pay with Solana (USDC)” built on LazorKit passkey wallets and gasless transactions, with a live demo on Vercel.',
+    url: 'https://github.com/AganFebro/paylazor',
     accent: '#7ed8c2',
   },
   {
-    name: 'Content and Stream Support',
-    tag: 'Media operations',
-    description: 'Produced gaming-related videos and supported live sessions across Discord and Twitch for regional campaigns.',
+    name: 'fhast',
+    tag: 'Systems / Rust',
+    description: 'Rust download manager with a Windows desktop app, terminal UI, CLI, and Chrome extension — segmented downloads, resume/retry, and SQLite persistence.',
+    url: 'https://github.com/AganFebro/fhast',
+    accent: '#ffb177',
+  },
+  {
+    name: 'Survey Apps',
+    tag: 'Community tool',
+    description: 'Lightweight survey webapp used to collect structured feedback from regional community members after activations, cutting manual follow-up for the ops team.',
+    url: 'https://github.com/AganFebro/CARV-Survey',
     accent: '#c39bff',
   },
 ];
@@ -416,26 +423,20 @@ function App() {
             <SlideShell active={activeIndex === 1}>
               <div className="slide-panel profile-layout">
                 <article className="surface-card surface-card--feature">
-                  <p className="eyebrow">Profile</p>
-                  <h2 className="section-heading">Web3 community moderation grounded in support and retention.</h2>
+                  <h2 className="section-heading">Building and running Web3 communities through daily live events, moderation, and user support.</h2>
                   <p className="body-copy">
-                    Community moderator with 2+ years of experience managing large-scale Web3 communities,
-                    including community building, live event operations, user support through chat,
-                    onboarding new users, retaining early adopters, and translating feedback for internal teams.
+                    Community moderator with 2+ years scaling Web3 communities globally. Hosted daily live
+                    events including game nights, quizzes, and AMAs — growing the Indonesia CARV Discord
+                    into one of the top 3 most active communities worldwide across a 230k+ member network.
+                    Acts as a bridge between community feedback and internal teams.
                   </p>
                   <div className="chip-row" aria-label="Focus areas">
                     <span className="chip">Community moderation</span>
+                    <span className="chip">Live event hosting</span>
+                    <span className="chip">Growth & retention</span>
                     <span className="chip">Product support</span>
-                    <span className="chip">Event operations</span>
-                    <span className="chip">Onboarding and retention</span>
+                    <span className="chip">Content & media</span>
                   </div>
-                </article>
-
-                <article className="surface-card note-card note-card--profile">
-                  <p className="note-card__label">Working style</p>
-                  <p className="note-card__copy">
-                    Clear communication, steady conflict handling, and regional context for Indonesian and global audiences.
-                  </p>
                 </article>
               </div>
             </SlideShell>
@@ -443,10 +444,9 @@ function App() {
             <SlideShell active={activeIndex === 2}>
               <div className="slide-panel snapshot-layout">
                 <article className="surface-card surface-card--compact">
-                  <p className="eyebrow">Snapshot</p>
-                  <h2 className="section-heading section-heading--compact">Scale, languages, and day-to-day operating scope.</h2>
+                  <h2 className="section-heading section-heading--compact">230k+ members, daily live events, and bilingual community operations.</h2>
                   <p className="body-copy body-copy--compact">
-                    A concise snapshot of the environments and responsibilities handled across recent roles.
+                    Numbers and scope across recent roles — Discord scale, community rank, and years running live operations.
                   </p>
                 </article>
 
@@ -457,11 +457,10 @@ function App() {
                       <p className="metric-card__label">{metric.label}</p>
                     </article>
                   ))}
-                  <article className="surface-card note-card">
-                    <p className="note-card__label">Coverage</p>
-                    <p className="note-card__copy">
-                      Discord and Telegram moderation, live event execution, conflict handling,
-                      product Q&amp;A, and bilingual support in Indonesian and English.
+                  <article className="surface-card metric-card">
+                    <p className="metric-card__value">What I cover</p>
+                    <p className="metric-card__label">
+                      Live events, moderation, and bilingual support across Discord, Telegram, and Twitch.
                     </p>
                   </article>
                 </div>
@@ -471,13 +470,16 @@ function App() {
             <SlideShell active={activeIndex === 3}>
               <div className="slide-panel single-column-slide">
                 <article className="surface-card">
-                  <p className="eyebrow">Experience</p>
                   <div className="role-list">
                     {roles.map((role) => (
                       <article key={role.company} className="role-card">
                         <div className="role-card__topline">
                           <div>
-                            <h2 className="role-card__company">{role.company}</h2>
+                            <h2 className="role-card__company">
+                              {role.url ? (
+                                <a href={role.url} target="_blank" rel="noopener noreferrer">{role.company}</a>
+                              ) : role.company}
+                            </h2>
                             <p className="role-card__title">{role.title}</p>
                           </div>
                           <p className="role-card__span">{role.span}</p>
@@ -498,9 +500,8 @@ function App() {
             <SlideShell active={activeIndex === 4}>
               <div className="slide-panel single-column-slide">
                 <article className="surface-card surface-card--feature">
-                  <p className="eyebrow">Selected Work</p>
                   <h2 className="section-heading section-heading--compact">
-                    Community projects built around real operational needs.
+                    Things I have designed and built, from backend systems to Web3 tooling.
                   </h2>
                   <div className="work-grid work-grid--feature">
                     {workItems.map((item) => (
@@ -510,14 +511,18 @@ function App() {
                         style={{ '--work-accent': item.accent }}
                       >
                         <p className="work-card__tag">{item.tag}</p>
-                        <h2 className="work-card__name">{item.name}</h2>
+                        <h2 className="work-card__name">
+                          {item.url ? (
+                            <a href={item.url} target="_blank" rel="noopener noreferrer">{item.name}</a>
+                          ) : item.name}
+                        </h2>
                         <p className="work-card__copy">{item.description}</p>
                       </article>
                     ))}
                   </div>
-                  <p className="body-copy body-copy--compact">
-                    Additional portfolio samples include repositories, livestream coverage, edited media,
-                    and supporting documentation.
+                  <p className="body-copy body-copy--compact body-copy--full">
+                    Check my GitHub to see more of my projects —{' '}
+                    <a href="https://github.com/AganFebro" target="_blank" rel="noopener noreferrer">github.com/AganFebro</a>.
                   </p>
                 </article>
               </div>

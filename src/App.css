@@ -344,12 +344,33 @@
 }
 
 .profile-layout {
-  grid-template-columns: 1.1fr 0.9fr;
+  align-content: start;
+  align-items: start;
 }
 
+.profile-layout .surface-card--feature {
+  justify-content: flex-start;
+  gap: 1.4rem;
+}
+
+.single-column-slide .surface-card--feature {
+  justify-content: flex-start;
+  gap: 1.4rem;
+}
+
+.single-column-slide {
+  align-content: start;
+  align-items: start;
+}
+
+.profile-layout,
 .snapshot-layout,
 .single-column-slide {
   grid-template-columns: 1fr;
+}
+
+.snapshot-layout {
+  grid-template-rows: auto 1fr;
 }
 
 .experience-layout,
@@ -416,6 +437,10 @@
 .body-copy--compact {
   max-width: 28rem;
   font-size: 0.95rem;
+}
+
+.body-copy--full {
+  max-width: none;
 }
 
 .chip-row,
@@ -507,6 +532,7 @@
 }
 
 .note-card--profile {
+  grid-column: auto;
   min-height: auto;
   justify-content: center;
 }
@@ -652,7 +678,6 @@
   }
 
   .overview-layout,
-  .profile-layout,
   .experience-layout,
   .work-layout {
     grid-template-columns: 1fr;
