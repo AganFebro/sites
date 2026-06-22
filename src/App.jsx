@@ -136,6 +136,32 @@ function ArrowIcon({ direction }) {
   );
 }
 
+function ThemeIcon({ theme }) {
+  if (theme === 'dark') {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="theme-icon">
+        <circle cx="12" cy="12" r="4.2" fill="currentColor" />
+        <g stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+          <line x1="12" y1="2.4" x2="12" y2="4.9" />
+          <line x1="12" y1="19.1" x2="12" y2="21.6" />
+          <line x1="2.4" y1="12" x2="4.9" y2="12" />
+          <line x1="19.1" y1="12" x2="21.6" y2="12" />
+          <line x1="5.2" y1="5.2" x2="6.95" y2="6.95" />
+          <line x1="17.05" y1="17.05" x2="18.8" y2="18.8" />
+          <line x1="18.8" y1="5.2" x2="17.05" y2="6.95" />
+          <line x1="6.95" y1="17.05" x2="5.2" y2="18.8" />
+        </g>
+      </svg>
+    );
+  }
+
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="theme-icon">
+      <path d="M20.5 14.7A8.2 8.2 0 0 1 9.3 3.5a.6.6 0 0 0-.82-.74A9.2 9.2 0 1 0 21.24 15.5a.6.6 0 0 0-.74-.8Z" fill="currentColor" />
+    </svg>
+  );
+}
+
 function SocialIcon({ label }) {
   switch (label) {
     case 'X':
@@ -275,6 +301,34 @@ function App() {
   const [activeIndex, setActiveIndex] = useState(0);
   const lastIndex = slides.length - 1;
 
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'light';
+    const stored = window.localStorage.getItem('theme');
+    if (stored === 'light' || stored === 'dark') return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem('theme');
+    if (stored === 'light' || stored === 'dark') return undefined;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = (event) => setTheme(event.matches ? 'dark' : 'light');
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme((current) => {
+      const next = current === 'dark' ? 'light' : 'dark';
+      window.localStorage.setItem('theme', next);
+      return next;
+    });
+  };
+
   useEffect(() => {
     const onKeyDown = (event) => {
       if (event.altKey || event.ctrlKey || event.metaKey) {
@@ -327,6 +381,16 @@ function App() {
       <div className="sr-only" aria-live="polite">
         {slides[activeIndex].liveLabel}
       </div>
+
+      <button
+        type="button"
+        className="theme-toggle"
+        onClick={toggleTheme}
+        aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+        title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+      >
+        <ThemeIcon theme={theme} />
+      </button>
 
       <div className="ambient-scene" aria-hidden="true">
         {orbStates[activeIndex].map((state, index) => (
