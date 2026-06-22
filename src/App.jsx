@@ -331,12 +331,14 @@ function App() {
       <div className="ambient-scene" aria-hidden="true">
         {orbStates[activeIndex].map((state, index) => (
           <span
-            key={`${slides[activeIndex].id}-${index}`}
+            key={`orb-${index}`}
             className={`ambient-orb ambient-orb--${index + 1}`}
             style={{
               transform: `translate3d(${state.x}, ${state.y}, 0) scale(${state.scale})`,
             }}
-          />
+          >
+            <span className="ambient-orb__body" />
+          </span>
         ))}
       </div>
 

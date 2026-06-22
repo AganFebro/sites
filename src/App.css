@@ -37,14 +37,22 @@
 .ambient-orb {
   position: absolute;
   display: block;
+  will-change: transform;
+  transition: transform 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ambient-orb__body {
+  position: absolute;
+  inset: 0;
+  display: block;
   border-radius: 50%;
   filter: blur(8px);
   opacity: 0.95;
   will-change: transform;
-  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 600ms ease;
+  animation: orbFloatA 14s ease-in-out infinite;
 }
 
-.ambient-orb::after {
+.ambient-orb__body::after {
   content: '';
   position: absolute;
   inset: 12% 18% auto 18%;
@@ -54,13 +62,31 @@
   filter: blur(18px);
 }
 
+@keyframes orbFloatA {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  33% { transform: translate3d(2.5%, -3%, 0) rotate(3deg); }
+  66% { transform: translate3d(-2%, 2.5%, 0) rotate(-2deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+
+@keyframes orbFloatB {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(-3%, -2.5%, 0) rotate(-3deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+
 .ambient-orb--1 {
   top: 3%;
   left: 2%;
   width: min(34rem, 42vw);
   aspect-ratio: 1;
+  transition-delay: 0ms;
+}
+
+.ambient-orb--1 .ambient-orb__body {
   border-radius: 56% 44% 48% 52% / 46% 54% 46% 54%;
   background: radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.98), rgba(158, 204, 255, 0.88) 28%, rgba(136, 171, 255, 0.24) 62%, transparent 78%);
+  animation: orbFloatA 15s ease-in-out infinite;
 }
 
 .ambient-orb--2 {
@@ -68,8 +94,14 @@
   right: 5%;
   width: min(28rem, 36vw);
   aspect-ratio: 1;
+  transition-delay: 70ms;
+}
+
+.ambient-orb--2 .ambient-orb__body {
   border-radius: 50% 50% 42% 58% / 56% 42% 58% 44%;
   background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.95), rgba(255, 184, 133, 0.84) 30%, rgba(255, 186, 152, 0.2) 63%, transparent 78%);
+  animation: orbFloatB 17s ease-in-out infinite;
+  animation-delay: -3s;
 }
 
 .ambient-orb--3 {
@@ -77,8 +109,14 @@
   left: 10%;
   width: min(24rem, 30vw);
   aspect-ratio: 1;
+  transition-delay: 140ms;
+}
+
+.ambient-orb--3 .ambient-orb__body {
   border-radius: 60% 40% 54% 46% / 42% 52% 48% 58%;
   background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.96), rgba(176, 218, 199, 0.74) 28%, rgba(176, 218, 199, 0.18) 62%, transparent 80%);
+  animation: orbFloatB 13s ease-in-out infinite;
+  animation-delay: -6s;
 }
 
 .ambient-orb--4 {
@@ -86,8 +124,14 @@
   bottom: 3%;
   width: min(22rem, 28vw);
   aspect-ratio: 1;
+  transition-delay: 210ms;
+}
+
+.ambient-orb--4 .ambient-orb__body {
   border-radius: 44% 56% 48% 52% / 52% 44% 56% 48%;
   background: radial-gradient(circle at 36% 32%, rgba(255, 255, 255, 0.96), rgba(153, 190, 255, 0.7) 26%, rgba(150, 190, 255, 0.16) 60%, transparent 78%);
+  animation: orbFloatA 16s ease-in-out infinite;
+  animation-delay: -9s;
 }
 
 .glass-frame {
@@ -864,5 +908,9 @@
   .social-link,
   .hero-name__track {
     transition-duration: 0.01ms;
+  }
+
+  .ambient-orb__body {
+    animation: none;
   }
 }
