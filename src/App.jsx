@@ -424,18 +424,36 @@ function App() {
               <div className="slide-panel profile-layout">
                 <article className="surface-card surface-card--feature">
                   <h2 className="section-heading">Building and running Web3 communities through daily live events, moderation, and user support.</h2>
-                  <p className="body-copy">
-                    Community moderator with 2+ years scaling Web3 communities globally. Hosted daily live
-                    events including game nights, quizzes, and AMAs — growing the Indonesia CARV Discord
-                    into one of the top 3 most active communities worldwide across a 230k+ member network.
-                    Acts as a bridge between community feedback and internal teams.
+                  <p className="body-copy body-copy--full">
+                    Community moderator with 2+ years scaling Web3 communities globally — hosting daily live
+                    events and growing the Indonesia CARV Discord into a top 3 community across a 230k+
+                    member network, bridging community feedback and internal teams.
                   </p>
-                  <div className="chip-row" aria-label="Focus areas">
-                    <span className="chip">Community moderation</span>
-                    <span className="chip">Live event hosting</span>
-                    <span className="chip">Growth & retention</span>
-                    <span className="chip">Product support</span>
-                    <span className="chip">Content & media</span>
+                  <div className="skill-grid" aria-label="Skills">
+                    <div className="skill-cell">
+                      <p className="skill-cell__label">Community Moderation</p>
+                      <p className="skill-cell__copy">Discord & Telegram management, moderation systems, and conflict handling.</p>
+                    </div>
+                    <div className="skill-cell">
+                      <p className="skill-cell__label">Events & Engagement</p>
+                      <p className="skill-cell__copy">Hosting live game nights, podcasts, quizzes, and community AMAs.</p>
+                    </div>
+                    <div className="skill-cell">
+                      <p className="skill-cell__label">Growth & Social Execution</p>
+                      <p className="skill-cell__copy">Daily community interaction, content coordination, and feedback collection.</p>
+                    </div>
+                    <div className="skill-cell">
+                      <p className="skill-cell__label">Product Support</p>
+                      <p className="skill-cell__copy">Onboarding users and answering product-related questions clearly.</p>
+                    </div>
+                    <div className="skill-cell skill-cell--wide">
+                      <p className="skill-cell__label">Content & Media</p>
+                      <p className="skill-cell__copy">Streaming events on Discord & Twitch, plus video and photo editing.</p>
+                    </div>
+                  </div>
+                  <div className="language-row" aria-label="Languages">
+                    <span className="language-pill"><strong>Indonesian</strong> Native</span>
+                    <span className="language-pill"><strong>English</strong> Fluent</span>
                   </div>
                 </article>
               </div>
